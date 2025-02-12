@@ -571,6 +571,7 @@ class Species:
             '\n\t charge=%s;' + \
             '\n\t phase=%s;' + \
             '\n\t flag=%s;' + \
+            '\n\t info=%s;' + \
             '\n\t latex_name=%s;' + \
             '\n\t molar radioactivity=%9.3e[%s];' + \
             '\n\t molar heat pwr=%9.3e[%s];' + \
@@ -584,6 +585,7 @@ class Species:
                 self.charge,
                 self.phase,
                 self.flag,
+                self.info,
                 self.latex_name,
                 self.molar_radioactivity, self.molar_radioactivity_unit,
                 self.molar_heat_pwr, self.molar_heat_pwr_unit,

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # This file is part of the Cortix toolkit environment
 # https://cortix.org
-"""Suupport class for working with chemical reactions.
+"""Support class for working with chemical reactions.
 """
 
 import copy
@@ -102,6 +102,11 @@ class ReactionMechanism:
             etc.
 
         There must be no blank lines. A stoichiometric coefficient equal to 1 can be ommited.
+
+        Additional information can be passed into the object by using the keyword *dict*
+        starting on the first column as follows, e.g.:
+
+        dict: H2O*[C4H9O]3PO(o) : TBP-water complexation in (o) phase
 
         Parameters
         ----------
@@ -204,12 +209,14 @@ class ReactionMechanism:
         self.data = list()
 
         # Keep the original data internally for future use in sub-mechanisms
-        # Remove header and comment lines
+        # Keep header and comment lines
         # Also, use any zeros in the alpha/beta coefficients to indicate that the corresponding species
         # is chemically inactive for kinetic purposes.
         self.__original_mechanism = list()
 
         # First: read the data in the mechanism
+
+        info_dict = dict() # keyword dict in the input to create an info dict
 
         for m_i in mechanism:
 
@@ -220,9 +227,16 @@ class ReactionMechanism:
                     self.header += m_i.strip() + '\n'
                 continue
 
+            if m_i[:5] == 'dict:':
+                data = m_i.split(':')
+                assert len(data) == 3, 'dict entry must be: dict: key:value'
+                info_dict[data[1].strip()] = data[2].strip()
+                continue
+
             self.__original_mechanism.append(m_i)
 
-            assert m_i.find(':') == -1, 'Change all ":" to ";".'
+            if m_i[:5] != 'dict:':
+                assert m_i.find(':') == -1, 'Change all ":" to ";".'
 
             data = m_i.split(';')
 
@@ -232,7 +246,7 @@ class ReactionMechanism:
 
             if len(data) > 1: # if semi-colon separated data exists
 
-                for d in data[1:]:
+                for d in data[1:]: # other information beyond the reaction
                     datum = d.strip()
 
                     name = datum.split('=')[0].strip()
@@ -334,7 +348,11 @@ class ReactionMechanism:
         self.species = list()
 
         for id, name in enumerate(self.species_names):
-            spc = Species(name=name, formula_name=name, flag=id)
+            if name in info_dict.keys():
+                info = info_dict[name]
+                spc = Species(name=name, formula_name=name, flag=id, info=info)
+            else:
+                spc = Species(name=name, formula_name=name, flag=id)
             self.species.append(spc)
 
         # Third: build the stoichiometric matrix
