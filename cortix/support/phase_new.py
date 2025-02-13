@@ -33,6 +33,7 @@ Sat Sep  5 01:26:53 EDT 2015
 
 Cortix: a program for system-level modules coupling, execution, and analysis.
 """
+
 import os, io
 from copy import deepcopy
 import time
@@ -880,7 +881,7 @@ class PhaseNew:
 
                 gs = gridspec.GridSpec(nrows, ncols)
                 #gs.update(left=0.08, right=0.98, wspace=0.4, hspace=0.4)
-                gs.update(left=0.13, right=0.98, wspace=0.4, hspace=0.4)
+                gs.update(left=0.13, right=0.98, wspace=0.4, hspace=0.6)
 
                 axlst = list()
 
@@ -901,7 +902,7 @@ class PhaseNew:
                     text = today + ': Cortix.Phase.Plot'
                 else:
                     text = title
-                fig.text(.5, .95, text, horizontalalignment='center', fontsize=14)
+                fig.text(.5, .95, text, horizontalalignment='center', fontsize=16)
 
                 axs = axes.flat
 
